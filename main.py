@@ -12,6 +12,7 @@ class Main:
 
     def run(self):
         self.detector = Detector(self.Classpath,self.modelname)
+        self.detector.predict('data/vid_4_1000.jpg')
 
 if __name__ == "__main__":
     program = Main()
