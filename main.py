@@ -1,35 +1,52 @@
 from Detector import Detector
-import cv2 
+import cv2
+from time import sleep 
 
 class Main:
     def __init__(self) -> None:
         """
         This Program will focus on pretrained models just for concept uses.
         For this one we will try out Ultralytics YoloV8n
+
+        videopath: path to saved mp4 on local pc
+
+        picslist: path to saved images to detect on local pc
         """
         self.Classpath = 'class.names'
-        self.modelname = 'yolov8n.yaml'
+        self.modelname = 'yolov8n.pt'
         self.datasetpath = 'coco.yaml'
-        # self.videopath = 'data/P1033684.mp4'
-        self.videopath = 'data/production_id_4405593 (360p).mp4'
+        self.videopath = 'data/P1033684.mp4'
 
 
-    def run(self,video:False,img:False):
+    def run(self):
         self.detector = Detector(self.Classpath,self.modelname,self.datasetpath,self.videopath)
-        
-        if img:
-            pics = [
-                'data/vid_4_1000.jpg',
-                'data/vid_4_1020.jpg',
-                'data/vid_4_1040.jpg',
-                'data/vid_4_1060.jpg',
-                'data/vid_4_1080.jpg',
-            ]
-            for i in pics:
-                img = self.detector.predict_img(i)
-        
-        if video:
-            self.detector.video()
+        while True:
+
+            choice = input('Img[1], vid[2] "q" to quit')
+            
+            if choice == 'q':
+                break
+
+            if choice == '1':
+                pics = [
+                    'data/vid_4_1000.jpg',
+                    'data/vid_4_1020.jpg',
+                    'data/vid_4_1040.jpg',
+                    'data/vid_4_1060.jpg',
+                    'data/vid_4_1080.jpg',
+                ]
+                for i in pics:
+                    img = self.detector.predict_img(i)
+                    continue
+
+            if choice == '2':
+                print('To cancel video during runtime press Q on keyboard')
+                sleep(5)
+                self.detector.video()
+                continue
+            
+            print('Please input 1,2 or q')
+
 
 if __name__ == "__main__":
     """
@@ -39,4 +56,4 @@ if __name__ == "__main__":
 
     """
     program = Main()
-    program.run(video=True,img=False)
+    program.run()
