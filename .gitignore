@@ -3,3 +3,4 @@ env
 data
 *.pt
 __pycache__
+testing.py
