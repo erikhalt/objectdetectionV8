@@ -9,7 +9,8 @@ class Main:
         """
         self.Classpath = 'class.names'
         self.modelname = 'yolov8n.pt'
-        self.videopath = 'data/P1033684.mp4'
+        # self.videopath = 'data/P1033684.mp4'
+        self.videopath = 'data/production_id_4405593 (360p).mp4'
 
 
     def run(self,video:False,img:False):
