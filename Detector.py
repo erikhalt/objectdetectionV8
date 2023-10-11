@@ -32,22 +32,35 @@ class Detector:
         cap = cv2.VideoCapture(videopath)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT,600)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH,600)
+        
         if (cap.isOpened()==False):
             print('Error !!!!!')
             return
         
-        
+        pre_time = 0
+        post_time = 0
         while cap.isOpened():
             success,frame = cap.read()
+            
+            pre_time = time.time()
+            
             if success:
                 result = self.model(frame)
                 annotated_frame = result[0].plot()
                 annotated_frame = cv2.resize(annotated_frame, (780, 540), 
                                                 interpolation = cv2.INTER_AREA)
+                
+                cv2.putText(annotated_frame,f'FPS: {int(1/(pre_time-post_time))}', 
+                            (10,30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 
+                            1,
+                            (0,255,0),
+                            1,
+                            2)
                 cv2.imshow('window',annotated_frame)
-
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
             else:
                 break
+            post_time = pre_time
 

@@ -30,5 +30,11 @@ class Main:
             self.detector.video(self.videopath)
 
 if __name__ == "__main__":
+    """
+    The code down below is to run the YOLOV8 model from ultralytics.
+    Its tested and works pretty good. Still a few small changes that has to be made
+    but program runs.
+
+    """
     program = Main()
     program.run(video=True,img=False)
