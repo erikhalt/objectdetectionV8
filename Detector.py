@@ -6,16 +6,16 @@ class Detector:
     def __init__(self,classpath,modelname,dataset,videopath):
         self.modelName = modelname
         self.classesPath = classpath
-        #self.readClasses() #Not in use atm
+        self.readClasses()
         self.model = self.initModel()
         self.datasetpath = dataset
         self.videopath = videopath
         print('Init done')
-    """
+    
     def readClasses(self):
         with open(self.classesPath, 'r') as f:
             self.classeslist = f.read().splitlines()
-    """
+    
 
     def initModel(self):
         model = YOLO(self.modelName)
@@ -24,11 +24,26 @@ class Detector:
     def predict_img(self,img):
         result = self.model(img)
         image = cv2.imread(img)
-        
+
         for r in result:
+            print(r.boxes)
             if len(r.boxes.cls) != 0:
-                for coords in r.boxes.xyxy:
-                    cv2.rectangle(image,(int(coords[0]),int(coords[1])),(int(coords[2]),int(coords[3])),(255,0,0),1)
+                for i in range(len(r.boxes.cls)):
+                    coords = r.boxes.xyxy[i]
+                    cls = int(r.boxes.cls[i])
+                    cv2.rectangle(image,
+                                  (int(coords[0]),int(coords[1])),(int(coords[2]),int(coords[3])),
+                                  (255,0,0),
+                                  1)
+                    cv2.putText(image,f'{self.classeslist[cls]}', 
+                            (int(coords[0]),int(coords[1])), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 
+                            0.5,
+                            (255,0,0),
+                            1,
+                            2)
+                    
+
             
         cv2.imshow('window',image)
         cv2.waitKey(1)
