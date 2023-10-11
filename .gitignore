@@ -4,3 +4,6 @@ data
 *.pt
 __pycache__
 testing.py
+dataset
+datasets
+runs

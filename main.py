@@ -8,13 +8,14 @@ class Main:
         For this one we will try out Ultralytics YoloV8n
         """
         self.Classpath = 'class.names'
-        self.modelname = 'yolov8n.pt'
+        self.modelname = 'yolov8n.yaml'
+        self.datasetpath = 'coco.yaml'
         # self.videopath = 'data/P1033684.mp4'
         self.videopath = 'data/production_id_4405593 (360p).mp4'
 
 
     def run(self,video:False,img:False):
-        self.detector = Detector(self.Classpath,self.modelname)
+        self.detector = Detector(self.Classpath,self.modelname,self.datasetpath,self.videopath)
         
         if img:
             pics = [
@@ -28,7 +29,7 @@ class Main:
                 img = self.detector.predict_img(i)
         
         if video:
-            self.detector.video(self.videopath)
+            self.detector.video()
 
 if __name__ == "__main__":
     """

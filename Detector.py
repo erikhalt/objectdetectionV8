@@ -2,11 +2,13 @@ import cv2,numpy as np, time
 from ultralytics import YOLO
 
 class Detector: 
-    def __init__(self,classpath,modelname):
+    def __init__(self,classpath,modelname,dataset,videopath):
         self.modelName = modelname
         self.classesPath = classpath
         self.readClasses()
         self.model = self.initModel()
+        self.datasetpath = dataset
+        self.videopath = videopath
         print('Init done')
 
     def readClasses(self):
@@ -15,6 +17,8 @@ class Detector:
 
     def initModel(self):
         model = YOLO(self.modelName)
+        print(f'model {self.modelName} training has begun.')
+        model.train(data='coco.yaml',epochs=100,imgsz=640)
         return model
     
     def predict_img(self,img):
@@ -25,11 +29,11 @@ class Detector:
                 for coords in r.boxes.xyxy:
                     cv2.rectangle(image,(int(coords[0]),int(coords[1])),(int(coords[2]),int(coords[3])),(255,0,0),1)
             cv2.imshow('window',img)
-            cv2.waitKey(1)   
+            cv2.waitKey(2)   
             cv2.destroyAllWindows
 
-    def video(self,videopath):
-        cap = cv2.VideoCapture(videopath)
+    def video(self):
+        cap = cv2.VideoCapture(self.videopath)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT,600)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH,600)
         
