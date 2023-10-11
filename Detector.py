@@ -1,36 +1,39 @@
 import cv2,numpy as np, time
 from ultralytics import YOLO
+from time import sleep
 
 class Detector: 
     def __init__(self,classpath,modelname,dataset,videopath):
         self.modelName = modelname
         self.classesPath = classpath
-        self.readClasses()
+        #self.readClasses() #Not in use atm
         self.model = self.initModel()
         self.datasetpath = dataset
         self.videopath = videopath
         print('Init done')
-
+    """
     def readClasses(self):
         with open(self.classesPath, 'r') as f:
             self.classeslist = f.read().splitlines()
+    """
 
     def initModel(self):
         model = YOLO(self.modelName)
-        print(f'model {self.modelName} training has begun.')
-        model.train(data='coco.yaml',epochs=100,imgsz=640)
         return model
     
     def predict_img(self,img):
         result = self.model(img)
         image = cv2.imread(img)
+        
         for r in result:
             if len(r.boxes.cls) != 0:
                 for coords in r.boxes.xyxy:
                     cv2.rectangle(image,(int(coords[0]),int(coords[1])),(int(coords[2]),int(coords[3])),(255,0,0),1)
-            cv2.imshow('window',img)
-            cv2.waitKey(2)   
-            cv2.destroyAllWindows
+            
+        cv2.imshow('window',image)
+        cv2.waitKey(1)
+        sleep(2)   
+        cv2.destroyAllWindows
 
     def video(self):
         cap = cv2.VideoCapture(self.videopath)
