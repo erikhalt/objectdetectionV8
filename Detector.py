@@ -29,14 +29,16 @@ class Detector:
             print(r.boxes)
             if len(r.boxes.cls) != 0:
                 for i in range(len(r.boxes.cls)):
-                    coords = r.boxes.xyxy[i]
+                    coords = [int(x) for x in r.boxes.xyxy[i]]
                     cls = int(r.boxes.cls[i])
+                    conf = round(float(r.boxes.conf[i]),2)
                     cv2.rectangle(image,
-                                  (int(coords[0]),int(coords[1])),(int(coords[2]),int(coords[3])),
+                                  (coords[0],coords[1]),
+                                  (coords[2],coords[3]),
                                   (255,0,0),
                                   1)
-                    cv2.putText(image,f'{self.classeslist[cls]}', 
-                            (int(coords[0]),int(coords[1])), 
+                    cv2.putText(image,f'{self.classeslist[cls]}: {conf}', 
+                            (coords[0],coords[1]), 
                             cv2.FONT_HERSHEY_SIMPLEX, 
                             0.5,
                             (255,0,0),
