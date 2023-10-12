@@ -29,11 +29,7 @@ class Main:
 
             if choice == '1':
                 pics = [
-                    'data/vid_4_1000.jpg',
-                    'data/vid_4_1020.jpg',
-                    'data/vid_4_1040.jpg',
-                    'data/vid_4_1060.jpg',
-                    'data/vid_4_1080.jpg',
+                    'data/pexels-tyler-tornberg-1587267.jpg',
                 ]
                 for i in pics:
                     img = self.detector.predict_img(i)
