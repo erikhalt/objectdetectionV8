@@ -3,21 +3,25 @@ from ultralytics import YOLO
 from time import sleep
 
 class Detector: 
-    def __init__(self,classpath,modelname,dataset,videopath):
+    def __init__(self,classpath,modelname,dataset,videopath,stream):
         self.modelName = modelname
         self.classesPath = classpath
+        self.datasetpath = dataset
+        self.stream = stream
+        self.videopath = videopath
+        self.fps_list = []
+
         self.readClasses()
         self.model = self.initModel()
-        self.datasetpath = dataset
-        self.videopath = videopath
-        print('Init done')
-    
     def readClasses(self):
         with open(self.classesPath, 'r') as f:
             self.classeslist = f.read().splitlines()
     
 
     def initModel(self):
+        if self.stream:
+            model = YOLO(self.modelName)
+            return model
         model = YOLO(self.modelName)
         return model
     
@@ -67,22 +71,39 @@ class Detector:
             pre_time = time.time()
             
             if success:
-                result = self.model(frame)
-                annotated_frame = result[0].plot()
-                annotated_frame = cv2.resize(annotated_frame, (780, 540), 
-                                                interpolation = cv2.INTER_AREA)
-                
-                cv2.putText(annotated_frame,f'FPS: {int(1/(pre_time-post_time))}', 
-                            (10,30), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 
-                            1,
-                            (0,255,0),
-                            1,
-                            2)
-                cv2.imshow('window',annotated_frame)
+                result = self.model(frame,stream=self.stream)
+                for r in result:
+            
+                    if len(r.boxes.cls) != 0:
+                        for i in range(len(r.boxes.cls)):
+                            coords = r.boxes.xyxy[i]
+                            cls = int(r.boxes.cls[i])
+                            cv2.rectangle(frame,
+                                          (int(coords[0]),int(coords[1])),(int(coords[2]),int(coords[3])),
+                                          (255,0,0),
+                                          1)
+                            cv2.putText(frame,f'{self.classeslist[cls]}', 
+                                    (int(coords[0]),int(coords[1])), 
+                                    cv2.FONT_HERSHEY_SIMPLEX, 
+                                    0.5,
+                                    (255,0,0),
+                                    1,
+                                    2)
+                        fps = int(1/(pre_time-post_time))
+                        self.fps_list.append(fps)
+                        cv2.putText(frame,f'FPS: {fps}', 
+                                    (10,30), 
+                                    cv2.FONT_HERSHEY_SIMPLEX, 
+                                    1,
+                                    (0,255,0),
+                                    1,
+                                    2)
+                        cv2.imshow('window',frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
             else:
                 break
             post_time = pre_time
-
+        if len(self.fps_list) != None:
+            mean = sum(self.fps_list)/len(self.fps_list)
+            print(f'Mean fps during video is {mean}')
