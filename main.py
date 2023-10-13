@@ -43,9 +43,8 @@ class Main:
                     'data/pexels-tyler-tornberg-1587267.jpg',
                 ]
                 for i in pics:
-                    img = self.detector.predict_img(i)
-                    continue
-
+                    self.detector.predict_img(i)
+                    
             if choice == '2':
                 print('To cancel video during runtime press Q on keyboard')
                 sleep(5)
