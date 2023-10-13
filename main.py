@@ -15,13 +15,24 @@ class Main:
         self.Classpath = 'class.names'
         self.modelname = 'yolov8n.pt'
         self.datasetpath = 'coco.yaml'
-        self.videopath = 'data/P1033684.mp4'
+        self.videopath = 'data/pexels_videos_4698 (360p).mp4'
 
 
     def run(self):
-        self.detector = Detector(self.Classpath,self.modelname,self.datasetpath,self.videopath)
-        while True:
 
+        stream_choice = input('Run with Stream activated? [y/n]')
+        if stream_choice == 'y' or stream_choice == 'Y':
+            stream = True
+        else:
+            stream = False
+
+        if stream:
+            self.detector = Detector(self.Classpath,self.modelname,self.datasetpath,self.videopath,stream)    
+        else:
+            self.detector = Detector(self.Classpath,self.modelname,self.datasetpath,self.videopath,stream)
+
+        while True:
+            cv2.destroyAllWindows()
             choice = input('Img[1], vid[2] "q" to quit')
             
             if choice == 'q':
@@ -29,16 +40,11 @@ class Main:
 
             if choice == '1':
                 pics = [
-                    'data/vid_4_1000.jpg',
-                    'data/vid_4_1020.jpg',
-                    'data/vid_4_1040.jpg',
-                    'data/vid_4_1060.jpg',
-                    'data/vid_4_1080.jpg',
+                    'data/pexels-tyler-tornberg-1587267.jpg',
                 ]
                 for i in pics:
-                    img = self.detector.predict_img(i)
-                    continue
-
+                    self.detector.predict_img(i)
+                    
             if choice == '2':
                 print('To cancel video during runtime press Q on keyboard')
                 sleep(5)
